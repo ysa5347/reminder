@@ -3,6 +3,7 @@ import 'package:reminder/data/repository/example_repository.dart';
 import 'package:reminder/domain/repository/example_repository.dart';
 import 'package:reminder/domain/usecase/example/get_example_usecase.dart';
 
+
 final getIt = GetIt.instance;
 
 Future<void> setupLocator() async {

@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:reminder/core/localnotification_setup.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 void main() {
+
+  //initialize notification settings
+  WidgetsFlutterBinding.ensureInitialized();
+  FlutterLocalNotification().initNotification();
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
+
   runApp(const MyApp());
 }
 

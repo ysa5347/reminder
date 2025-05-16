@@ -5,7 +5,7 @@ class SaveNotificationUsecase {
   final NotificationRepository repository;
   SaveNotificationUsecase({required this.repository});
 
-  Future<Notification> excute() async{
-    return await repository.saveNotification();
+  Future<Notification> excute(String timeValue, String title) async{
+    return await repository.saveNotification(timeValue, title);
   }
 }

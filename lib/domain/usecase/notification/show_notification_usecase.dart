@@ -6,7 +6,7 @@ class ShowNotificationUsecase {
 
   ShowNotificationUsecase({required this.repository});
 
-  Future<void> excute() async {
-    return await repository.showNotification();
+  Future<List<Notification>> excute(timeValue) async {
+    return await repository.showNotification(timeValue);
   }
 }

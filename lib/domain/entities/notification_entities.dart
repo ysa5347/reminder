@@ -1,9 +1,15 @@
 class Notification{
+  final int notificationId;
   final String text;
-  final String timeDate;
-  final String? timeHour;
-  final String? timeMinute;
-  final String? timeSecond;
+  final String timeValue; //format: date_hour_minute
+  final String? period;
 
-  Notification(this.timeHour, this.timeMinute, this.timeSecond, {required this.text, required this.timeDate});
+  Notification(
+      this.period, 
+      {
+        required this.notificationId, 
+        required this.text, 
+        required this.timeValue
+      }
+    );
 }

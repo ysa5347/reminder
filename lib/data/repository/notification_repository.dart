@@ -5,36 +5,33 @@ import 'package:reminder/domain/entities/notification_entities.dart';
 
 class NotificationRepositoryImpl extends NotificationRepository {
   @override
-  Future<Notification> saveNotification() async {
+  Future<Notification> saveNotification(String timeValue, String title) async {
+    //notificationId생성, 고유해야함
+    String period = timeValue.substring(0, timeValue.length - 13);
     return Notification(
-      '12', // timeHour
-      '00', // timeMinute
-      '00', // timeSecond
-      text: 'New Reminder',
-      timeDate: DateTime.now().toString(),
+      period,
+      notificationId: DateTime.now().millisecondsSinceEpoch, //고유 id로 변환
+      timeValue: timeValue,
+      text: title, // Default text since notification object is not defined
     );
   }
 
   @override
-  Future<void> showNotification() async {
-    // TODO: implement showNotification
+  Future<List<Notification>> showNotification(String date) async {
+    // TODO: get Notification value when date
+    /*
+    period = 
+    text = 
+    timeValue = 
+    return Notification(period, text: text, timeValue: timeValue);
+    */
     throw UnimplementedError();
-    //get timeHour, timeMinute, timeSecond ->
     
   }
-
-  /*
+  
   @override
-  NotificationDetails notificationDetails() {
-    return const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'daily_channel_id',
-            'Daily Notificatioin',
-            channelDescription: 'Daily Notification Channel',
-            importance: Importance.max,
-            priority: Priority.high,
-          ),
-    );
+  Future<Notification> deleteNotification(int notificationId) {
+    // TODO: delete notiication data by using notificationId
+    throw UnimplementedError();
   }
-  */
 }

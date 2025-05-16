@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'data/datasource/local.dart';
+import 'domain/repository/item_repository.dart';
+import 'data/repository/item_repository_impl.dart';
 
-void main() {
+final GetIt getIt = GetIt.instance;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final database = await $FloorAppDatabase
+      .databaseBuilder('app_database.db')
+      .build();
+  
+  // await setupDependencies(database);
   runApp(const MyApp());
-}
+} 
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Reminder app',
       theme: ThemeData(
         // This is the theme of your application.
         //

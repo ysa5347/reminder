@@ -50,7 +50,7 @@ class ItemRepositoryImpl implements ItemRepository{
   }
   
   @override
-  Future<int> deleteItem(int id) async {
+  Future<int?> deleteItem(int id) async {
     return await _itemDao.deleteItem(id);
   }
 

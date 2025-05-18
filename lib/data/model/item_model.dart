@@ -12,11 +12,11 @@ class ItemModel{
   final int? categoryId;
 
   @ColumnInfo(name: 'created_at')
-  final DateTime? createdAt;
+  final int? createdAt;
 
   @ColumnInfo(name: 'updated_at')
-  final DateTime? updatedAt;
-  final DateTime? due;
+  final int? updatedAt;
+  final int? due;
 
   @ColumnInfo(name: 'is_completed')
   final bool isCompleted;
@@ -48,7 +48,7 @@ class ItemModel{
     this.flag = 0,
     this.priority = 0,
     this.parentId
-  })
+  });
 
   Item toEntity(){
     return Item(
@@ -56,9 +56,9 @@ class ItemModel{
       title: title,
       memo: memo,
       categoryId: categoryId,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(createdAt),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(updatedAt),
-      due: DateTime.fromMillisecondsSinceEpoch(due),
+      createdAt: createdAt != null ? DateTime.fromMillisecondsSinceEpoch(createdAt!) : null,
+      updatedAt: updatedAt != null ? DateTime.fromMillisecondsSinceEpoch(updatedAt!) : null,
+      due: due != null ? DateTime.fromMillisecondsSinceEpoch(due!) : null,
       isCompleted: isCompleted,
       isRepeating: isRepeating,
       // tags: tags,

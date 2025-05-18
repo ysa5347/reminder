@@ -15,15 +15,13 @@ abstract class ItemDao {
   @Query('SELECT * FROM items WHERE due >= :startOfDay AND due <= :endOfDay')
   Future<List<ItemModel>> getItemsByDue(int startOfDay, int endOfDay); 
 
-  @Query('SELECT * FROM items WHERE ')
-
   @insert
   Future<int> createItem(ItemModel item);
   @update
   Future<int> updateItem(ItemModel item);
 
   @Query('DELETE FROM items WHERE id = :id')
-  Future<int> deleteItem(int id);
+  Future<int?> deleteItem(int id);
 
   @Query('SELECT * FROM items WHERE due > :now ORDER BY due ASC LIMIT :limit')
   Future<List<ItemModel>> getUpcomingItems(int now, int limit);

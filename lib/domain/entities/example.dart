@@ -1,5 +1,11 @@
-class Example {
-  final String name;
+class Reminder {
+  final String id;
+  final String title;
+  final DateTime dueDate;
 
-  Example({required this.name});
+  Reminder({
+    required this.id,
+    required this.title,
+    required this.dueDate,
+  });
 }

@@ -46,7 +46,7 @@ class ItemModel{
     this.due,
     this.completedAt,
     this.flag = 0,
-    this.priority = 0,
+    this.priority = 3,
     this.repeatId,
     this.parentId,
     this.categoryId

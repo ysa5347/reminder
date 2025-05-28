@@ -1,9 +1,17 @@
 import 'package:floor/floor.dart';
-import '../../domain/entities/item.dart';
 import './category_model.dart';
 
 @Entity(
-  tableName: 'items'
+  tableName: 'items',
+  foreignKeys: [
+    ForeignKey(
+      childColumns: ['category_id'],
+      parentColumns: ['id'],
+      entity: CategoryModel,
+      onUpdate: ForeignKeyAction.cascade,
+      onDelete: ForeignKeyAction.cascade
+    )
+  ]
 )
 class ItemModel{
   @PrimaryKey(autoGenerate: true)

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'data/datasource/local.dart';
-import 'domain/repository/item_repository.dart';
-import 'data/repository/item_repository_impl.dart';
+import 'domain/repository/example_repository.dart';
+import 'data/repository/example_repository.dart';
 
 final GetIt getIt = GetIt.instance;
 

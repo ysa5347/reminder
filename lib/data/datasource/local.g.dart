@@ -96,7 +96,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `items` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `memo` TEXT, `category_id` INTEGER, `created_at` INTEGER, `updated_at` INTEGER, `due` INTEGER, `is_completed` INTEGER NOT NULL, `is_repeating` INTEGER NOT NULL, `flag` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `parent_id` INTEGER)');
+            'CREATE TABLE IF NOT EXISTS `items` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `description` TEXT, `created_at` INTEGER, `updated_at` INTEGER, `due` INTEGER, `completed_at` INTEGER, `flag` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `repeat_id` INTEGER, `parent_id` INTEGER, `category_id` INTEGER, FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE ON DELETE CASCADE, FOREIGN KEY (`repeat_id`) REFERENCES `repeats` (`id`) ON UPDATE CASCADE ON DELETE CASCADE)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -121,16 +121,16 @@ class _$ItemDao extends ItemDao {
             (ItemModel item) => <String, Object?>{
                   'id': item.id,
                   'title': item.title,
-                  'memo': item.memo,
-                  'category_id': item.categoryId,
+                  'description': item.description,
                   'created_at': item.createdAt,
                   'updated_at': item.updatedAt,
                   'due': item.due,
-                  'is_completed': item.isCompleted ? 1 : 0,
-                  'is_repeating': item.isRepeating ? 1 : 0,
+                  'completed_at': item.completedAt,
                   'flag': item.flag,
                   'priority': item.priority,
-                  'parent_id': item.parentId
+                  'repeat_id': item.repeatId,
+                  'parent_id': item.parentId,
+                  'category_id': item.categoryId
                 }),
         _itemModelUpdateAdapter = UpdateAdapter(
             database,
@@ -139,16 +139,16 @@ class _$ItemDao extends ItemDao {
             (ItemModel item) => <String, Object?>{
                   'id': item.id,
                   'title': item.title,
-                  'memo': item.memo,
-                  'category_id': item.categoryId,
+                  'description': item.description,
                   'created_at': item.createdAt,
                   'updated_at': item.updatedAt,
                   'due': item.due,
-                  'is_completed': item.isCompleted ? 1 : 0,
-                  'is_repeating': item.isRepeating ? 1 : 0,
+                  'completed_at': item.completedAt,
                   'flag': item.flag,
                   'priority': item.priority,
-                  'parent_id': item.parentId
+                  'repeat_id': item.repeatId,
+                  'parent_id': item.parentId,
+                  'category_id': item.categoryId
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -167,16 +167,16 @@ class _$ItemDao extends ItemDao {
         mapper: (Map<String, Object?> row) => ItemModel(
             id: row['id'] as int?,
             title: row['title'] as String,
-            memo: row['memo'] as String?,
-            categoryId: row['category_id'] as int?,
+            description: row['description'] as String?,
             createdAt: row['created_at'] as int?,
             updatedAt: row['updated_at'] as int?,
             due: row['due'] as int?,
-            isCompleted: (row['is_completed'] as int) != 0,
-            isRepeating: (row['is_repeating'] as int) != 0,
+            completedAt: row['completed_at'] as int?,
             flag: row['flag'] as int,
             priority: row['priority'] as int,
-            parentId: row['parent_id'] as int?));
+            repeatId: row['repeat_id'] as int?,
+            parentId: row['parent_id'] as int?,
+            categoryId: row['category_id'] as int?));
   }
 
   @override
@@ -185,16 +185,16 @@ class _$ItemDao extends ItemDao {
         mapper: (Map<String, Object?> row) => ItemModel(
             id: row['id'] as int?,
             title: row['title'] as String,
-            memo: row['memo'] as String?,
-            categoryId: row['category_id'] as int?,
+            description: row['description'] as String?,
             createdAt: row['created_at'] as int?,
             updatedAt: row['updated_at'] as int?,
             due: row['due'] as int?,
-            isCompleted: (row['is_completed'] as int) != 0,
-            isRepeating: (row['is_repeating'] as int) != 0,
+            completedAt: row['completed_at'] as int?,
             flag: row['flag'] as int,
             priority: row['priority'] as int,
-            parentId: row['parent_id'] as int?),
+            repeatId: row['repeat_id'] as int?,
+            parentId: row['parent_id'] as int?,
+            categoryId: row['category_id'] as int?),
         arguments: [id]);
   }
 
@@ -204,16 +204,16 @@ class _$ItemDao extends ItemDao {
         mapper: (Map<String, Object?> row) => ItemModel(
             id: row['id'] as int?,
             title: row['title'] as String,
-            memo: row['memo'] as String?,
-            categoryId: row['category_id'] as int?,
+            description: row['description'] as String?,
             createdAt: row['created_at'] as int?,
             updatedAt: row['updated_at'] as int?,
             due: row['due'] as int?,
-            isCompleted: (row['is_completed'] as int) != 0,
-            isRepeating: (row['is_repeating'] as int) != 0,
+            completedAt: row['completed_at'] as int?,
             flag: row['flag'] as int,
             priority: row['priority'] as int,
-            parentId: row['parent_id'] as int?),
+            repeatId: row['repeat_id'] as int?,
+            parentId: row['parent_id'] as int?,
+            categoryId: row['category_id'] as int?),
         arguments: [categoryId]);
   }
 
@@ -227,16 +227,16 @@ class _$ItemDao extends ItemDao {
         mapper: (Map<String, Object?> row) => ItemModel(
             id: row['id'] as int?,
             title: row['title'] as String,
-            memo: row['memo'] as String?,
-            categoryId: row['category_id'] as int?,
+            description: row['description'] as String?,
             createdAt: row['created_at'] as int?,
             updatedAt: row['updated_at'] as int?,
             due: row['due'] as int?,
-            isCompleted: (row['is_completed'] as int) != 0,
-            isRepeating: (row['is_repeating'] as int) != 0,
+            completedAt: row['completed_at'] as int?,
             flag: row['flag'] as int,
             priority: row['priority'] as int,
-            parentId: row['parent_id'] as int?),
+            repeatId: row['repeat_id'] as int?,
+            parentId: row['parent_id'] as int?,
+            categoryId: row['category_id'] as int?),
         arguments: [startOfDay, endOfDay]);
   }
 
@@ -257,16 +257,16 @@ class _$ItemDao extends ItemDao {
         mapper: (Map<String, Object?> row) => ItemModel(
             id: row['id'] as int?,
             title: row['title'] as String,
-            memo: row['memo'] as String?,
-            categoryId: row['category_id'] as int?,
+            description: row['description'] as String?,
             createdAt: row['created_at'] as int?,
             updatedAt: row['updated_at'] as int?,
             due: row['due'] as int?,
-            isCompleted: (row['is_completed'] as int) != 0,
-            isRepeating: (row['is_repeating'] as int) != 0,
+            completedAt: row['completed_at'] as int?,
             flag: row['flag'] as int,
             priority: row['priority'] as int,
-            parentId: row['parent_id'] as int?),
+            repeatId: row['repeat_id'] as int?,
+            parentId: row['parent_id'] as int?,
+            categoryId: row['category_id'] as int?),
         arguments: [now, limit]);
   }
 
@@ -276,16 +276,16 @@ class _$ItemDao extends ItemDao {
         mapper: (Map<String, Object?> row) => ItemModel(
             id: row['id'] as int?,
             title: row['title'] as String,
-            memo: row['memo'] as String?,
-            categoryId: row['category_id'] as int?,
+            description: row['description'] as String?,
             createdAt: row['created_at'] as int?,
             updatedAt: row['updated_at'] as int?,
             due: row['due'] as int?,
-            isCompleted: (row['is_completed'] as int) != 0,
-            isRepeating: (row['is_repeating'] as int) != 0,
+            completedAt: row['completed_at'] as int?,
             flag: row['flag'] as int,
             priority: row['priority'] as int,
-            parentId: row['parent_id'] as int?));
+            repeatId: row['repeat_id'] as int?,
+            parentId: row['parent_id'] as int?,
+            categoryId: row['category_id'] as int?));
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 import './category_model.dart';
+import './repeat_model.dart';
 
 @Entity(
   tableName: 'items',
@@ -8,6 +9,13 @@ import './category_model.dart';
       childColumns: ['category_id'],
       parentColumns: ['id'],
       entity: CategoryModel,
+      onUpdate: ForeignKeyAction.cascade,
+      onDelete: ForeignKeyAction.cascade
+    ),
+    ForeignKey(
+      childColumns: ['repeat_id'],
+      parentColumns: ['id'],
+      entity: RepeatModel,
       onUpdate: ForeignKeyAction.cascade,
       onDelete: ForeignKeyAction.cascade
     )

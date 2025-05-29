@@ -1,13 +1,17 @@
 import 'package:reminder/domain/entities/notification_entities.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 abstract class NotificationRepository {
-  Future<Notification> showNotification(String timeValue);  //show user notification
-  Future<Notification> saveNotification(String timeValue, String title);
-  Future<Notification> deleteNotification(int notificationId); //delete notification that has same notification id
+  Future<List<Notification>> GetNotificationsById(int notificationId);  //get Notification entity from database by notificationId
+  Future<List<Notification>> GetNotificationsByTitle(String notificationTitle); //get Notification entity from database by Notification.Title
+
+  Future<List<Item>> GetItemsById(int itemId); //get Item entity from database by itemId
+  Future<Item> SaveItem(Item item); //save Item entity to database
+  Future<Item> DeleteItem(int itemId); //delete Item entity from database by itemId
+  Future<Notification> SaveNotification(Notification notification); //save Notification entity to database
+  Future<Notification> DeleteNotification(int notificationId); //delete Notification entity from database by notificationId
 }
 
 abstract class AlarmRepository{
-  Future<void> setAlarm(String timeValue); //set alarm. it may run in domain
-  Future<void> deleteAlarm(int notificatinoId);
+  Future<void> SetAlarmByNotificationId(Notification  notification ); //set alarm. it may run in domain
+  Future<void> deleteAlarmByNotificationId(int notificationId); //delete alarm. it may run in domain
 }

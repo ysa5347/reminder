@@ -5,33 +5,57 @@ import 'package:reminder/domain/entities/notification_entities.dart';
 
 class NotificationRepositoryImpl extends NotificationRepository {
   @override
-  Future<Notification> saveNotification(String timeValue, String title) async {
-    //notificationId생성, 고유해야함
-    String period = timeValue.substring(0, timeValue.length - 13);
-    return Notification(
-      period,
-      notificationId: DateTime.now().millisecondsSinceEpoch, //고유 id로 변환
-      timeValue: timeValue,
-      text: title, // Default text since notification object is not defined
-    );
+  Future<List<Notification>> GetNotificationsById(int notificationId) async {
+    // TODO: notificationId를 통해 데이터베이스에서 데이터를 가져옴
+    throw UnimplementedError();
+  }
+  Future<List<Notification>> GetNotificationsByTitle(String notificationTitle) async{
+    // TODO: 이름을 가지고 database에서 이름과 같은 모든 notification을 출력
+    throw UnimplementedError();
   }
 
   @override
-  Future<List<Notification>> showNotification(String date) async {
-    // TODO: get Notification value when date
-    /*
-    period = 
-    text = 
-    timeValue = 
-    return Notification(period, text: text, timeValue: timeValue);
-    */
+  Future<List<Item>> GetItemsById(int itemId) async {
+    // TODO: itemId를 통해 데이터베이스에서 데이터를 가져옴
     throw UnimplementedError();
-    
   }
-  
+
   @override
-  Future<Notification> deleteNotification(int notificationId) {
-    // TODO: delete notiication data by using notificationId
+  Future<Item> SaveItem(Item item) async {
+    // TODO: item을 데이터베이스에 저장
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Item> DeleteItem(int itemId) async {
+    // TODO: itemId를 통해 데이터베이스에서 데이터를 삭제
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Notification> SaveNotification(Notification notification) async {
+    // TODO: notification을 데이터베이스에 저장
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Notification> DeleteNotification(int notificationId) async {
+    // TODO: notificationId를 통해 데이터베이스에서 데이터를 삭제
     throw UnimplementedError();
   }
 }
+/*
+class AlarmRepositoryImpl extends AlarmRepository{ //실제 알람이 울리도록 하는 것
+  @override
+  Future<void> SetAlarmByNotificationId(Notification notification) async {
+    // TODO: timeValue를 통해 알람을 설정, time value는 yyyy_mm_dd_hh_mm 형식으로 저장되어 있음
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteAlarmByNotificationId(int notificationId) async {
+    // TODO: notificationId를 통해 알람을 삭제
+    throw UnimplementedError();
+  }
+}
+*/

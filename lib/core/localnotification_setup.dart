@@ -19,7 +19,7 @@ class FlutterLocalNotification{
       );
     }
     /*
-    나중에 shownotification으로 이동시켜야함
+    나중에 이동시켜야함
     NotificationDetails notificationDetails() {
         return const NotificationDetails(
           android: AndroidNotificationDetails(

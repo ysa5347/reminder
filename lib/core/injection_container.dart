@@ -1,15 +1,30 @@
 import 'package:get_it/get_it.dart';
+
 import 'package:reminder/data/repository/example_repository.dart';
 import 'package:reminder/domain/repository/example_repository.dart';
+
 import 'package:reminder/domain/repository/item_repository.dart';
 import 'package:reminder/data/repository/item_repository_impl.dart';
+
+import 'package:reminder/data/repository/category_repository_impl.dart';
+import 'package:reminder/domain/repository/category_repository.dart';
+
 import 'package:reminder/data/repository/notification_repository_impl.dart';
 import 'package:reminder/domain/repository/notification_repository.dart';
+
+import 'package:reminder/data/repository/repeat_repository_impl.dart';
+import 'package:reminder/domain/repository/repeat_repository.dart';
 
 import 'package:reminder/domain/usecase/example/get_example_usecase.dart';
 import 'package:reminder/domain/usecase/notification/GetNotifications_usecase.dart';
 import 'package:reminder/domain/usecase/item/GetItems_usecase.dart';
 import 'package:reminder/domain/usecase/item/SaveItem_usecase.dart';
+
+import 'package:reminder/data/dao/item_dao.dart';
+import 'package:reminder/data/dao/category_dao.dart';
+import 'package:reminder/data/dao/notification_dao.dart';
+import 'package:reminder/data/dao/repeat_dao.dart';
+
 //import 'package:reminder/domain/usecase/Alarm/SetAlarm_usecase.dart';
 //import 'package:reminder/domain/usecase/Alarm/DeleteAlarm_usecase.dart';
 
@@ -17,9 +32,10 @@ final getIt = GetIt.instance;
 
 Future<void> setupLocator() async {
   getIt.registerLazySingleton<ExampleRepository>(() => ExampleRepositoryImpl());
-  getIt.registerLazySingleton<GetExampleUseCase>(
-    () => GetExampleUseCase(repository: getIt<ExampleRepository>()),
+  getIt.registerLazySingleton<GetExampleUsecase>(
+    () => GetExampleUsecase(repository: getIt<ExampleRepository>()),
   );
+  
   //Dependency Injection save, show usecase
   getIt.registerLazySingleton<NotificationRepository>(() => NotificationRepositoryImpl());
   getIt.registerLazySingleton<ItemRepository>(() => ItemRepositoryImpl());

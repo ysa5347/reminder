@@ -3,61 +3,45 @@ import 'package:equatable/equatable.dart';
 class Item extends Equatable{
   final int? id;
   final String title;
-  final String? memo;
-  final int? categoryId;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final DateTime? due;
-  final bool isCompleted;
-  final bool isRepeating;
-  final List<String> tags;
-  // final Repeat? repeat;       // TODO: class repeat
-  // final Notification? noti;   // TODO: class notification
-  final bool flag;
+  final String? description;
+  final int? createdAt;
+  final int? updatedAt;
+  final int? due;
+  final int? completedAt;
+  final int flag;
   final int priority;
+  final int? repeatId;
   final int? parentId;
+  final int? categoryId;  
 
   const Item({
     this.id,
     required this.title,
-    this.memo,
-    this.categoryId,
+    this.description,
     this.createdAt,
     this.updatedAt,
     this.due,
-    this.isCompleted = false,
-    this.isRepeating = false,
-    this.tags = const [],
-    // this.repeat,
-    // this.noti,
-    this.flag = false,
-    this.priority = 0,
-    this.parentId
+    this.completedAt,
+    this.flag = 0,
+    this.priority = 3,
+    this.repeatId,
+    this.parentId,
+    this.categoryId
   });
 
   @override
   List<Object?> get props => [
     id,
     title,
-    memo,
+    description,
     createdAt,
     updatedAt,
     due,
-    isCompleted,
-    tags,
-    // repeat,
-    // noti,
+    completedAt,
     flag,
     priority,
-    parentId
+    repeatId,
+    parentId,
+    categoryId
   ];
 }
-
-
-// class Repeat extends Equatable{
-//   //
-// }
-
-// class Notification extends Equatable{
-//   //
-// }

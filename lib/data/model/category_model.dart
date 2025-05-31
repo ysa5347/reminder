@@ -8,6 +8,8 @@ class CategoryModel{
   final int? id;
   final String title;
   final String? description;
+  final String? color;
+  final String? icon;
 
   @ColumnInfo(name: 'created_at')
   final int? createdAt;
@@ -21,6 +23,8 @@ class CategoryModel{
     this.id,
     required this.title,
     this.description,
+    this.color,
+    this.icon,
     this.createdAt,
     this.updatedAt
     // this.image,

@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 class Notification{
   final int notificationId;
   final String timevalue;
@@ -15,11 +17,11 @@ class Item{
   final int itemId;
   final String title;
   final String description;
+  final String? due;
+  final String? period;
   final int priority;
   final int? repeatId;
   final int? parentId;
-  final String? due;
-  final String? period;
   final int? categoryId;
 
   Item({

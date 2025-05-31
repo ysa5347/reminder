@@ -1,17 +1,11 @@
-import 'package:reminder/domain/repository/notification_repository.dart';
-import 'package:reminder/domain/entities/notification_entities.dart';
+import 'package:reminder/domain/repository/item_repository.dart';
+import 'package:reminder/domain/entities/item.dart';
 
-class NotificationRepositoryImpl extends NotificationRepository {
+class ItemRepositoryImpl extends ItemRepository {
   @override
-  Future<List<Notification>> GetNotificationsById(int notificationId) async {
-    // TODO: notificationId를 통해 데이터베이스에서 데이터를 가져옴
+  Future<List<Item>> getAllItems() async {
     throw UnimplementedError();
   }
-  Future<List<Notification>> GetNotificationsByTitle(String notificationTitle) async{
-    // TODO: 이름을 가지고 database에서 이름과 같은 모든 notification을 출력
-    throw UnimplementedError();
-  }
-
   @override
   Future<List<Item>> GetItemsById(int itemId) async {
     // TODO: itemId를 통해 데이터베이스에서 데이터를 가져옴
@@ -27,18 +21,6 @@ class NotificationRepositoryImpl extends NotificationRepository {
   @override
   Future<Item> DeleteItem(int itemId) async {
     // TODO: itemId를 통해 데이터베이스에서 데이터를 삭제
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Notification> SaveNotification(Notification notification) async {
-    // TODO: notification을 데이터베이스에 저장
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Notification> DeleteNotification(int notificationId) async {
-    // TODO: notificationId를 통해 데이터베이스에서 데이터를 삭제
     throw UnimplementedError();
   }
 }

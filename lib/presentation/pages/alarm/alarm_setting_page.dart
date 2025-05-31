@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../blocs/alarm_bloc.dart';
-import '../blocs/alarm_event.dart';
-import '../blocs/alarm_state.dart';
+import '../../blocs/alarm/alarm_bloc.dart';
+import '../../blocs/alarm/alarm_event.dart';
+import '../../blocs/alarm/alarm_state.dart';
 import 'package:reminder/domain/entities/notification_entities.dart' as entities;
 
 import 'package:reminder/core/localnotification_setup.dart';

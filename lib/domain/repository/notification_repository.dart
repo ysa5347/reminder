@@ -10,8 +10,3 @@ abstract class NotificationRepository {
   Future<Notification> SaveNotification(Notification notification); //save Notification entity to database
   Future<Notification> DeleteNotification(int notificationId); //delete Notification entity from database by notificationId
 }
-
-abstract class AlarmRepository{
-  Future<void> SetAlarmByNotificationId(Notification  notification ); //set alarm. it may run in domain
-  Future<void> deleteAlarmByNotificationId(int notificationId); //delete alarm. it may run in domain
-}

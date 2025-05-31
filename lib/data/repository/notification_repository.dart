@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart' as material;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:reminder/domain/repository/notification_repository.dart';
 import 'package:reminder/domain/entities/notification_entities.dart';
 

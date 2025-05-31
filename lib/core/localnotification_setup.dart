@@ -1,10 +1,13 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 class FlutterLocalNotification{
   final FlutterLocalNotificationsPlugin notificationsPlugin = 
     FlutterLocalNotificationsPlugin();
 
     Future<void> initNotification() async {
+      tz.initializeTimeZones();
 
       const initializationSettingsAndroid = 
         AndroidInitializationSettings('mipmap/ic_launcher');
@@ -15,8 +18,13 @@ class FlutterLocalNotification{
 
       await notificationsPlugin.initialize(
         initializationSettings,
-        //onDidReceiveNotificationResponse: (NotificationResponse response) async {}
+        onDidReceiveNotificationResponse: (NotificationResponse response) async {
+          // 알림 클릭 시 처리할 로직
+          print('알림 클릭됨: ${response.payload}');
+        },
       );
+      await notificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+
     }
     /*
     나중에 이동시켜야함

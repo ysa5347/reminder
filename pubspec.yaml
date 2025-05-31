@@ -41,6 +41,7 @@ dependencies:
   timezone: ^0.10.0
   flutter_bloc: ^9.1.1
   get_it: ^8.0.3
+  permission_handler: ^11.0.1
   
 
 dev_dependencies:

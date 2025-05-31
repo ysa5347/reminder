@@ -1,14 +1,10 @@
-import 'package:reminder/domain/repository/notification_repository.dart';
 import 'package:reminder/domain/entities/notification_entities.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:reminder/core/localnotification_setup.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class SetAlarmUsecase{
-  final AlarmRepository repository;
-
-  SetAlarmUsecase({required this.repository});
-
+  
   Future<void> execute(Notification notificationInfo) async {
     NotificationDetails notificationDetails() {
         return const NotificationDetails(
@@ -18,10 +14,15 @@ class SetAlarmUsecase{
             channelDescription: 'This channel is used for daily notifications',
             importance: Importance.max,
             priority: Priority.high,
+
+            playSound: true,
+            enableVibration: true,
+            fullScreenIntent: true,  // 잠금화면에서도 표시
+            category: AndroidNotificationCategory.alarm,
+            visibility: NotificationVisibility.public,
           ),
         );
       }
-    
     final String timeValue = notificationInfo.timevalue;
     final List<String> timeComponents = timeValue.split('_');
     final int year = int.parse(timeComponents[0]);
@@ -49,8 +50,5 @@ class SetAlarmUsecase{
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time, // 🔁 매일 반복
     );
-    
-
-    return await repository.SetAlarmByNotificationId(notificationInfo);
   }
 }

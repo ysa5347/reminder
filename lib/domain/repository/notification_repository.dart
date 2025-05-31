@@ -1,8 +1,15 @@
 import 'package:reminder/domain/entities/notification_entities.dart';
 
 abstract class NotificationRepository {
-  Future<List<Notification>> GetNotificationsById(int notificationId);  //get Notification entity from database by notificationId
-  Future<List<Notification>> GetNotificationsByTitle(String notificationTitle); //get Notification entity from database by Notification.Title
-  Future<Notification> SaveNotification(Notification notification); //save Notification entity to database
-  Future<Notification> DeleteNotification(int notificationId); //delete Notification entity from database by notificationId
+  /// Get notification entity from database by notificationId
+  Future<List<Notification>> getNotificationsById(int notificationId);
+  
+  /// Get notification entity from database by notification title
+  Future<List<Notification>> getNotificationsByTitle(String notificationTitle);
+  
+  /// Save notification entity to database
+  Future<Notification> saveNotification(Notification notification);
+  
+  /// Delete notification entity from database by notificationId
+  Future<Notification> deleteNotification(int notificationId);
 }

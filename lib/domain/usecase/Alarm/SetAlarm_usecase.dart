@@ -3,7 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:reminder/core/localnotification_setup.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-class SetAlarmUsecase{
+class SetAlarmUsecase {
   
   Future<void> execute(Notification notificationInfo) async {
     NotificationDetails notificationDetails() {
@@ -23,7 +23,7 @@ class SetAlarmUsecase{
           ),
         );
       }
-    final String timeValue = notificationInfo.timevalue;
+    final String timeValue = notificationInfo.timeValue;
     final List<String> timeComponents = timeValue.split('_');
     final int year = int.parse(timeComponents[0]);
     final int month = int.parse(timeComponents[1]);

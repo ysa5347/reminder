@@ -1,8 +1,8 @@
 import 'package:reminder/core/localnotification_setup.dart';
 
-class DeleteAlarmUsecase{
+class DeleteAlarmUsecase {
 
-  Future<void> execute(int notificationId) async{
+  Future<void> execute(int notificationId) async {
     await FlutterLocalNotification().notificationsPlugin.cancel(notificationId);
   }
 }

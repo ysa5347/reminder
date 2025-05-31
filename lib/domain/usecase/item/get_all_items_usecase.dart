@@ -6,7 +6,7 @@ class GetAllItemsUsecase {
 
   GetAllItemsUsecase(this.itemRepository);
 
-  Future<List<Item>> call() async{
+  Future<List<Item>> execute() async {
     return await itemRepository.getAllItems();
   }
 }

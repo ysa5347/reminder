@@ -43,7 +43,7 @@ class _AlarmSettingPageState extends State<AlarmSettingPage> {
       
       final notification = entities.Notification(
         notificationId: 1, // 임시 ID 생성
-        timevalue: timevalue,
+        timeValue: timevalue,
         title: '알람',
         description: '설정된 알람입니다',
       );

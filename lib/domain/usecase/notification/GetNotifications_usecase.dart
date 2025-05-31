@@ -7,6 +7,6 @@ class GetNotificationsUsecase {
   GetNotificationsUsecase({required this.repository});
 
   Future<List<Notification>> execute(int notificationId) async {
-    return await repository.GetNotificationsById(notificationId);
+    return await repository.getNotificationsById(notificationId);
   }
 }

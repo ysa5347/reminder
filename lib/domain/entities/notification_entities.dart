@@ -1,38 +1,23 @@
 import 'package:equatable/equatable.dart';
 
-class Notification{
+class Notification extends Equatable {
   final int notificationId;
-  final String timevalue;
+  final String timeValue;  // YYYY_MM_DD_hh_mm format
   final String title;
   final String? description;
 
-  Notification({
+  const Notification({
     required this.notificationId,
-    required this.timevalue,
+    required this.timeValue,
     required this.title,
     this.description,
   });
-}
-class Item{
-  final int itemId;
-  final String title;
-  final String description;
-  final String? due;
-  final String? period;
-  final int priority;
-  final int? repeatId;
-  final int? parentId;
-  final int? categoryId;
 
-  Item({
-    required this.itemId,
-    required this.title,
-    required this.description,
-    required this.priority,
-    this.repeatId,
-    this.parentId,
-    this.due,
-    this.period,
-    this.categoryId,
-  });
+  @override
+  List<Object?> get props => [
+    notificationId,
+    timeValue,
+    title,
+    description,
+  ];
 }

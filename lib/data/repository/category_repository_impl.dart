@@ -26,7 +26,21 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
   @override
   Future<Category> saveCategory(Category category) async {
-    final categoryModel = _mapEntityToModel(category);
+    // CREATE; createdAt, updatedAt automatically set
+    final now = DateTime.now();
+    final nowString = _formatDateTimeToString(now);
+    
+    final categoryWithTimestamp = Category(
+      id: category.id,
+      name: category.name,
+      description: category.description,
+      color: category.color,
+      icon: category.icon,
+      createdAt: category.createdAt ?? nowString,  // 새로 생성하는 경우 현재 시간 설정
+      updatedAt: nowString,                        // 항상 현재 시간으로 업데이트
+    );
+    
+    final categoryModel = _mapEntityToModel(categoryWithTimestamp);
     final id = await _categoryDao.insertCategory(categoryModel);
     
     final savedModel = categoryModel.copyWith(id: id);
@@ -35,9 +49,29 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
   @override
   Future<Category> updateCategory(Category category) async {
-    final categoryModel = _mapEntityToModel(category);
+    // UPDATE; updatedAt automatically set
+    final now = DateTime.now();
+    final nowString = _formatDateTimeToString(now);
+    
+    // 기존 카테고리 정보 가져와서 createdAt 보존
+    final existingCategory = await getCategoryById(category.id!);
+    if (existingCategory == null) {
+      throw Exception('Category with id ${category.id} not found');
+    }
+    
+    final categoryWithTimestamp = Category(
+      id: category.id,
+      name: category.name,
+      description: category.description,
+      color: category.color,
+      icon: category.icon,
+      createdAt: existingCategory.createdAt,  // 기존 createdAt 유지
+      updatedAt: nowString,                   // 현재 시간으로 업데이트
+    );
+    
+    final categoryModel = _mapEntityToModel(categoryWithTimestamp);
     await _categoryDao.updateCategory(categoryModel);
-    return category;
+    return categoryWithTimestamp;
   }
 
   @override
@@ -65,13 +99,16 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
   @override
   Future<Category> createDefaultCategory() async {
+    final now = DateTime.now();
+    final nowString = _formatDateTimeToString(now);
+    
     final defaultCategory = Category(
       name: 'Default',
       description: 'Default category for uncategorized items',
       color: '#2196F3',
       icon: 'folder',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
+      createdAt: nowString,
+      updatedAt: nowString,
     );
     return await saveCategory(defaultCategory);
   }
@@ -91,10 +128,10 @@ class CategoryRepositoryImpl implements CategoryRepository {
       color: model.color,
       icon: model.icon,
       createdAt: model.createdAt != null 
-          ? DateTime.fromMillisecondsSinceEpoch(model.createdAt!)
+          ? _formatMillisecondsToString(model.createdAt!)
           : null,
       updatedAt: model.updatedAt != null 
-          ? DateTime.fromMillisecondsSinceEpoch(model.updatedAt!)
+          ? _formatMillisecondsToString(model.updatedAt!)
           : null,
     );
   }
@@ -106,8 +143,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
       description: entity.description,
       color: entity.color,
       icon: entity.icon,
-      createdAt: entity.createdAt?.millisecondsSinceEpoch,
-      updatedAt: entity.updatedAt?.millisecondsSinceEpoch,
+      createdAt: entity.createdAt != null 
+          ? _parseStringToDateTime(entity.createdAt!).millisecondsSinceEpoch
+          : null,
+      updatedAt: entity.updatedAt != null 
+          ? _parseStringToDateTime(entity.updatedAt!).millisecondsSinceEpoch
+          : null,
     );
   }
 
@@ -136,9 +177,25 @@ class CategoryRepositoryImpl implements CategoryRepository {
     );
   }
 
+  // Helper methods for date formatting and parsing
+  String _formatDateTimeToString(DateTime dateTime) {
+    return '${dateTime.year}_${dateTime.month.toString().padLeft(2, '0')}_${dateTime.day.toString().padLeft(2, '0')}_${dateTime.hour.toString().padLeft(2, '0')}_${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
   String _formatMillisecondsToString(int milliseconds) {
     final dateTime = DateTime.fromMillisecondsSinceEpoch(milliseconds);
-    return '${dateTime.year}_${dateTime.month.toString().padLeft(2, '0')}_${dateTime.day.toString().padLeft(2, '0')}_${dateTime.hour.toString().padLeft(2, '0')}_${dateTime.minute.toString().padLeft(2, '0')}';
+    return _formatDateTimeToString(dateTime);
+  }
+
+  DateTime _parseStringToDateTime(String dateString) {
+    final parts = dateString.split('_');
+    return DateTime(
+      int.parse(parts[0]), // year
+      int.parse(parts[1]), // month
+      int.parse(parts[2]), // day
+      int.parse(parts[3]), // hour
+      int.parse(parts[4]), // minute
+    );
   }
 }
 

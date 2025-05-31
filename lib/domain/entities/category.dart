@@ -6,8 +6,8 @@ class Category extends Equatable {
   final String? description;
   final String? color;
   final String? icon;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+  final String? createdAt;    // YYYY_MM_DD_hh_mm format
+  final String? updatedAt;    // YYYY_MM_DD_hh_mm format
 
   const Category({
     this.id,

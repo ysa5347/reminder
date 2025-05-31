@@ -26,7 +26,21 @@ class RepeatRepositoryImpl implements RepeatRepository {
 
   @override
   Future<Repeat> saveRepeat(Repeat repeat) async {
-    final repeatModel = _mapEntityToModel(repeat);
+    // CREATE; createdAt, updatedAt automatically set
+    final now = DateTime.now();
+    final nowString = _formatDateTimeToString(now);
+    
+    final repeatWithTimestamp = Repeat(
+      id: repeat.id,
+      weekdayByte: repeat.weekdayByte,
+      weekByte: repeat.weekByte,
+      createdAt: repeat.createdAt ?? nowString,  // 새로 생성하는 경우 현재 시간 설정
+      updatedAt: nowString,                      // 항상 현재 시간으로 업데이트
+      startDay: repeat.startDay,
+      endDay: repeat.endDay,
+    );
+    
+    final repeatModel = _mapEntityToModel(repeatWithTimestamp);
     final id = await _repeatDao.insertRepeat(repeatModel);
     
     final savedModel = repeatModel.copyWith(id: id);
@@ -35,9 +49,29 @@ class RepeatRepositoryImpl implements RepeatRepository {
 
   @override
   Future<Repeat> updateRepeat(Repeat repeat) async {
-    final repeatModel = _mapEntityToModel(repeat);
+    // UPDATE; updatedAt automatically set
+    final now = DateTime.now();
+    final nowString = _formatDateTimeToString(now);
+    
+    // 기존 반복 설정 정보 가져와서 createdAt 보존
+    final existingRepeat = await getRepeatById(repeat.id!);
+    if (existingRepeat == null) {
+      throw Exception('Repeat with id ${repeat.id} not found');
+    }
+    
+    final repeatWithTimestamp = Repeat(
+      id: repeat.id,
+      weekdayByte: repeat.weekdayByte,
+      weekByte: repeat.weekByte,
+      createdAt: existingRepeat.createdAt,  // 기존 createdAt 유지
+      updatedAt: nowString,                 // 현재 시간으로 업데이트
+      startDay: repeat.startDay,
+      endDay: repeat.endDay,
+    );
+    
+    final repeatModel = _mapEntityToModel(repeatWithTimestamp);
     await _repeatDao.updateRepeat(repeatModel);
-    return repeat;
+    return repeatWithTimestamp;
   }
 
   @override

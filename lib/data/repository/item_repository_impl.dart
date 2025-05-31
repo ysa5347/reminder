@@ -22,7 +22,26 @@ class ItemRepositoryImpl implements ItemRepository {
 
   @override
   Future<Item> saveItem(Item item) async {
-    final itemModel = _mapEntityToModel(item);
+    // CREATE; createdAt, updatedAt automatically set
+    final now = DateTime.now();
+    final nowString = _formatDateTimeToString(now);
+    
+    final itemWithTimestamp = Item(
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      createdAt: item.createdAt ?? nowString,  // 새로 생성하는 경우 현재 시간 설정
+      updatedAt: nowString,                    // 항상 현재 시간으로 업데이트
+      due: item.due,
+      completedAt: item.completedAt,
+      flag: item.flag,
+      priority: item.priority,
+      repeatId: item.repeatId,
+      parentId: item.parentId,
+      categoryId: item.categoryId,
+    );
+    
+    final itemModel = _mapEntityToModel(itemWithTimestamp);
     final id = await _itemDao.insertItem(itemModel);
     
     final savedModel = itemModel.copyWith(id: id);
@@ -42,9 +61,34 @@ class ItemRepositoryImpl implements ItemRepository {
 
   @override
   Future<Item> updateItem(Item item) async {
-    final itemModel = _mapEntityToModel(item);
+    // UPDATE; updatedAt automatically set
+    final now = DateTime.now();
+    final nowString = _formatDateTimeToString(now);
+    
+    // 기존 아이템 정보 가져와서 createdAt 보존
+    final existingItem = await getItemById(item.id!);
+    if (existingItem == null) {
+      throw Exception('Item with id ${item.id} not found');
+    }
+    
+    final itemWithTimestamp = Item(
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      createdAt: existingItem.createdAt,  // 기존 createdAt 유지
+      updatedAt: nowString,               // 현재 시간으로 업데이트
+      due: item.due,
+      completedAt: item.completedAt,
+      flag: item.flag,
+      priority: item.priority,
+      repeatId: item.repeatId,
+      parentId: item.parentId,
+      categoryId: item.categoryId,
+    );
+    
+    final itemModel = _mapEntityToModel(itemWithTimestamp);
     await _itemDao.updateItem(itemModel);
-    return item;
+    return itemWithTimestamp;
   }
 
   @override
@@ -126,13 +170,55 @@ class ItemRepositoryImpl implements ItemRepository {
 
   @override
   Future<void> markItemAsCompleted(int itemId) async {
-    final completedAt = DateTime.now().millisecondsSinceEpoch;
+    final now = DateTime.now();
+    final completedAt = now.millisecondsSinceEpoch;
     await _itemDao.markItemAsCompleted(itemId, completedAt);
+    
+    final item = await getItemById(itemId);
+    if (item != null) {
+      final updatedItem = Item(
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        createdAt: item.createdAt,
+        updatedAt: _formatDateTimeToString(now),  // updatedAt 갱신
+        due: item.due,
+        completedAt: _formatDateTimeToString(now),
+        flag: 1, // 완료 상태
+        priority: item.priority,
+        repeatId: item.repeatId,
+        parentId: item.parentId,
+        categoryId: item.categoryId,
+      );
+      final itemModel = _mapEntityToModel(updatedItem);
+      await _itemDao.updateItem(itemModel);
+    }
   }
 
   @override
   Future<void> markItemAsUncompleted(int itemId) async {
     await _itemDao.markItemAsUncompleted(itemId);
+    
+    final item = await getItemById(itemId);
+    if (item != null) {
+      final now = DateTime.now();
+      final updatedItem = Item(
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        createdAt: item.createdAt,
+        updatedAt: _formatDateTimeToString(now),  // updatedAt 갱신
+        due: item.due,
+        completedAt: null, // 완료 시간 제거
+        flag: 0, // 미완료 상태
+        priority: item.priority,
+        repeatId: item.repeatId,
+        parentId: item.parentId,
+        categoryId: item.categoryId,
+      );
+      final itemModel = _mapEntityToModel(updatedItem);
+      await _itemDao.updateItem(itemModel);
+    }
   }
 
   @override
@@ -247,7 +333,12 @@ class ItemRepositoryImpl implements ItemRepository {
     );
   }
 
-  // Helper methods for date formatting and parsing
+  // helper methods for date formatting(DateTime -> str)
+  String _formatDateTimeToString(DateTime dateTime) {
+    return '${dateTime.year}_${dateTime.month.toString().padLeft(2, '0')}_${dateTime.day.toString().padLeft(2, '0')}_${dateTime.hour.toString().padLeft(2, '0')}_${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  // Helper methods for date formatting(ms -> str) and parsing
   String _formatMillisecondsToString(int milliseconds) {
     final dateTime = DateTime.fromMillisecondsSinceEpoch(milliseconds);
     return '${dateTime.year}_${dateTime.month.toString().padLeft(2, '0')}_${dateTime.day.toString().padLeft(2, '0')}_${dateTime.hour.toString().padLeft(2, '0')}_${dateTime.minute.toString().padLeft(2, '0')}';

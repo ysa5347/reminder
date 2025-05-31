@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'data/datasource/local.dart';
-import 'domain/repository/example_repository.dart';
-import 'data/repository/example_repository.dart';
 import 'package:reminder/core/localnotification_setup.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:reminder/presentation/pages/alarm_setting_page.dart';
-import 'package:reminder/presentation/blocs/alarm_bloc.dart';
+import 'package:reminder/presentation/pages/alarm/alarm_setting_page.dart';
+import 'package:reminder/presentation/blocs/alarm/alarm_bloc.dart';
 import 'package:reminder/domain/usecase/Alarm/SetAlarm_usecase.dart';
 import 'package:permission_handler/permission_handler.dart';
 

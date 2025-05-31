@@ -22,7 +22,8 @@ Future<void> setupLocator() async {
   );
   //Dependency Injection save, show usecase
   getIt.registerLazySingleton<NotificationRepository>(() => NotificationRepositoryImpl());
- 
+  getIt.registerLazySingleton<ItemRepository>(() => ItemRepositoryImpl());
+
   getIt.registerLazySingleton<GetItemsUsecase>(
     () => GetItemsUsecase(repository: getIt<ItemRepository>()),
   );

@@ -24,14 +24,8 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
 
   void _onSetAlarm(SetAlarmEvent event, Emitter<AlarmState> emit) async {
     emit(AlarmLoading());
-    
     try {
-      await setAlarmUsecase.execute(
-        event.notification.notificationId,
-        event.notification.timeValue,
-        event.notification.title,
-        event.notification.description ?? '',
-      );
+      await setAlarmUsecase.execute(event.notification);
       emit(AlarmSuccess('알람이 설정되었습니다'));
     } catch (e) {
       emit(AlarmError(e.toString()));

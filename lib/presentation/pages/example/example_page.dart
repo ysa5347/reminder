@@ -13,7 +13,7 @@ class ExamplePage extends StatelessWidget {
     return BlocProvider(
       create:
           (context) =>
-              ExampleBloc(getExampleUseCase: getIt<GetExampleUseCase>()),
+              ExampleBloc(getExampleUsecase: getIt<GetExampleUsecase>()),
       child: const ExampleView(),
     );
   }

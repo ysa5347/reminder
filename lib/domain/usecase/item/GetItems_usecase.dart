@@ -7,6 +7,6 @@ class GetItemsUsecase {
   GetItemsUsecase({required this.repository});
 
   Future<List<Item>> execute(int itemId) async {
-    return await repository.GetItemsById(itemId);
+    return await repository.getItemsById(itemId);
   }
 }

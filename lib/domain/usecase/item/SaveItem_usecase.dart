@@ -7,6 +7,6 @@ class SaveItemUsecase {
   SaveItemUsecase({required this.repository});
 
   Future<Item> execute(Item item) async {
-    return await repository.SaveItem(item);
+    return await repository.saveItem(item);
   }
 }

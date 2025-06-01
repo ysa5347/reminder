@@ -1,18 +1,18 @@
 import 'package:equatable/equatable.dart';
 
-class Item extends Equatable{
+class Item extends Equatable {
   final int? id;
   final String title;
   final String? description;
-  final int? createdAt;
-  final int? updatedAt;
-  final int? due;
-  final int? completedAt;
+  final String? createdAt;    // YYYY_MM_DD_hh_mm format
+  final String? updatedAt;    // YYYY_MM_DD_hh_mm format
+  final String? due;          // YYYY_MM_DD_hh_mm format
+  final String? completedAt;  // YYYY_MM_DD_hh_mm format
   final int flag;
   final int priority;
   final int? repeatId;
   final int? parentId;
-  final int? categoryId;  
+  final int? categoryId;
 
   const Item({
     this.id,
@@ -26,7 +26,7 @@ class Item extends Equatable{
     this.priority = 3,
     this.repeatId,
     this.parentId,
-    this.categoryId
+    this.categoryId,
   });
 
   @override
@@ -42,6 +42,6 @@ class Item extends Equatable{
     priority,
     repeatId,
     parentId,
-    categoryId
+    categoryId,
   ];
 }

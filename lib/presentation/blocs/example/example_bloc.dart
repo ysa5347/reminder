@@ -7,20 +7,20 @@ part 'example_event.dart';
 part 'example_state.dart';
 
 class ExampleBloc extends Bloc<ExampleEvent, ExampleState> {
-  ExampleBloc({required GetExampleUseCase getExampleUseCase})
-    : _getExampleUseCase = getExampleUseCase,
+  ExampleBloc({required GetExampleUsecase getExampleUsecase})
+    : _getExampleUsecase = getExampleUsecase,
       super(InitialExampleState()) {
     on<GetExampleEvent>(_onGetExample);
   }
 
-  final GetExampleUseCase _getExampleUseCase;
+  final GetExampleUsecase _getExampleUsecase;
 
   Future<void> _onGetExample(
     GetExampleEvent event,
     Emitter<ExampleState> emit,
   ) async {
     emit(LoadingExampleState());
-    final result = await _getExampleUseCase.execute();
+    final result = await _getExampleUsecase.execute();
     emit(LoadedExampleState(example: result));
   }
 }

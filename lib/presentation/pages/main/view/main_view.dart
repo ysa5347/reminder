@@ -419,29 +419,36 @@ class _MainViewState extends State<MainView> {
     );
   }
 
-  // 카테고리 추가/수정 모달 바텀텀 시트 표시
+  // 카테고리 추가/수정 모달 바텀 시트 표시
   void _showCategoryBottomSheet(BuildContext context, {Category? category}) {
+    final categoryBloc = context.read<CategoryBloc>(); // 현재 context에서 bloc을 가져옴
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => CategoryFormBottomSheet(
-        category: category,
-        onSave: (category) {
-          if (category.id == null) {
-            // 새 카테고리 추가
-            context.read<CategoryBloc>().add(AddCategory(category));
-          } else {
-            // 기존 카테고리 수정
-            context.read<CategoryBloc>().add(UpdateCategory(category));
-          }
-        },
+      builder: (modalContext) => BlocProvider.value(
+        value: categoryBloc, // 기존 bloc을 새로운 context에 제공
+        child: CategoryFormBottomSheet(
+          category: category,
+          onSave: (category) {
+            if (category.id == null) {
+              // 새 카테고리 추가
+              categoryBloc.add(AddCategory(category));
+            } else {
+              // 기존 카테고리 수정
+              categoryBloc.add(UpdateCategory(category));
+            }
+          },
+        ),
       ),
     );
   }
 
   // 카테고리 옵션 모달 바텀 시트 표시 (길게 누를 때)
   void _showCategoryOptionsBottomSheet(BuildContext context, Category category) {
+    final categoryBloc = context.read<CategoryBloc>(); // 현재 context에서 bloc을 가져옴
+    
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -451,48 +458,51 @@ class _MainViewState extends State<MainView> {
           topRight: Radius.circular(20),
         ),
       ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
+      builder: (modalContext) => BlocProvider.value(
+        value: categoryBloc, // 기존 bloc을 새로운 context에 제공
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              category.name,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 20),
+              Text(
+                category.name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.edit, color: Colors.blue),
-              title: const Text('수정'),
-              onTap: () {
-                Navigator.pop(context);
-                _showCategoryBottomSheet(context, category: category);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.delete, color: Colors.red),
-              title: const Text('삭제'),
-              onTap: () async {
-                Navigator.pop(context);
-                final shouldDelete = await _showDeleteConfirmationDialog(context, category);
-                if (shouldDelete == true) {
-                  context.read<CategoryBloc>().add(DeleteCategory(category.id!));
-                }
-              },
-            ),
-          ],
+              const SizedBox(height: 20),
+              ListTile(
+                leading: const Icon(Icons.edit, color: Colors.blue),
+                title: const Text('수정'),
+                onTap: () {
+                  Navigator.pop(modalContext);
+                  _showCategoryBottomSheet(context, category: category);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text('삭제'),
+                onTap: () async {
+                  Navigator.pop(modalContext);
+                  final shouldDelete = await _showDeleteConfirmationDialog(context, category);
+                  if (shouldDelete == true) {
+                    categoryBloc.add(DeleteCategory(category.id!));
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

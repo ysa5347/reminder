@@ -43,11 +43,14 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     AddCategory event,
     Emitter<CategoryState> emit,
   ) async {
+    print('CategoryBloc: Adding category: ${event.category.name}');
     try {
-      await saveCategoryUsecase(event.category);
+      final savedCategory = await saveCategoryUsecase(event.category);
+      print('CategoryBloc: Category saved successfully: ${savedCategory.name}');
       emit(const CategoryOperationSuccess('카테고리가 추가되었습니다.'));
       add(LoadCategories()); // 목록 새로고침
     } catch (error) {
+      print('CategoryBloc: Error adding category: $error');
       emit(CategoryError('카테고리 추가 실패: ${error.toString()}'));
     }
   }

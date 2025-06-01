@@ -274,6 +274,7 @@ class _CategoryFormBottomSheetState extends State<CategoryFormBottomSheet> {
   }
 
   void _saveCategory() {
+    print('CategoryFormBottomSheet: _saveCategory called');
     if (_formKey.currentState!.validate()) {
       final category = Category(
         id: widget.category?.id,
@@ -287,8 +288,11 @@ class _CategoryFormBottomSheetState extends State<CategoryFormBottomSheet> {
         updatedAt: widget.category?.updatedAt,
       );
       
+      print('CategoryFormBottomSheet: Creating category: ${category.name}');
       widget.onSave(category);
       Navigator.of(context).pop();
+    } else {
+      print('CategoryFormBottomSheet: Form validation failed');
     }
   }
 }

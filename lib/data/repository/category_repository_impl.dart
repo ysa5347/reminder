@@ -26,25 +26,36 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
   @override
   Future<Category> saveCategory(Category category) async {
-    // CREATE; createdAt, updatedAt automatically set
-    final now = DateTime.now();
-    final nowString = _formatDateTimeToString(now);
-    
-    final categoryWithTimestamp = Category(
-      id: category.id,
-      name: category.name,
-      description: category.description,
-      color: category.color,
-      icon: category.icon,
-      createdAt: category.createdAt ?? nowString,  // 새로 생성하는 경우 현재 시간 설정
-      updatedAt: nowString,                        // 항상 현재 시간으로 업데이트
-    );
-    
-    final categoryModel = _mapEntityToModel(categoryWithTimestamp);
-    final id = await _categoryDao.insertCategory(categoryModel);
-    
-    final savedModel = categoryModel.copyWith(id: id);
-    return _mapModelToEntity(savedModel);
+    print('CategoryRepositoryImpl: Saving category: ${category.name}');
+    try {
+      // CREATE; createdAt, updatedAt automatically set
+      final now = DateTime.now();
+      final nowString = _formatDateTimeToString(now);
+      
+      final categoryWithTimestamp = Category(
+        id: category.id,
+        name: category.name,
+        description: category.description,
+        color: category.color,
+        icon: category.icon,
+        createdAt: category.createdAt ?? nowString,  // 새로 생성하는 경우 현재 시간 설정
+        updatedAt: nowString,                        // 항상 현재 시간으로 업데이트
+      );
+      
+      final categoryModel = _mapEntityToModel(categoryWithTimestamp);
+      print('CategoryRepositoryImpl: Category model created: ${categoryModel.title}');
+      
+      final id = await _categoryDao.insertCategory(categoryModel);
+      print('CategoryRepositoryImpl: Category inserted with ID: $id');
+      
+      final savedModel = categoryModel.copyWith(id: id);
+      final result = _mapModelToEntity(savedModel);
+      print('CategoryRepositoryImpl: Category saved successfully: ${result.name}');
+      return result;
+    } catch (error) {
+      print('CategoryRepositoryImpl: Error saving category: $error');
+      rethrow;
+    }
   }
 
   @override

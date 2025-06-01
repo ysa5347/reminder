@@ -44,4 +44,34 @@ class Item extends Equatable {
     parentId,
     categoryId,
   ];
+
+  Item copyWith({
+    int? id,
+    String? title,
+    String? description,
+    String? createdAt,
+    String? updatedAt,
+    String? due,
+    String? completedAt,
+    int? flag,
+    int? priority,
+    int? repeatId,
+    int? parentId,
+    int? categoryId,
+  }) {
+    return Item(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      due: due ?? this.due,
+      completedAt: completedAt ?? this.completedAt,
+      flag: flag ?? this.flag,
+      priority: priority ?? this.priority,
+      repeatId: repeatId ?? this.repeatId,
+      parentId: parentId ?? this.parentId,
+      categoryId: categoryId ?? this.categoryId,
+    );
+  }
 }

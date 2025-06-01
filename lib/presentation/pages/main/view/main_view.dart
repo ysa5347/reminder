@@ -124,13 +124,13 @@ class _MainViewState extends State<MainView> {
         children: [
         const Text(
           '통계',
-          style: TextStyle(
+          style: TextStyle( 
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 16),
         GridView.count(
           crossAxisCount: 2,
           crossAxisSpacing: 12,
@@ -138,6 +138,7 @@ class _MainViewState extends State<MainView> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           childAspectRatio: 1.5,
+          padding: EdgeInsets.zero,
           children: [
             _buildStatCard(
               context,
@@ -244,7 +245,7 @@ class _MainViewState extends State<MainView> {
             color: Colors.black87,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 16),
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -254,6 +255,7 @@ class _MainViewState extends State<MainView> {
             final category = categories[index];
             return _buildCategoryCard(context, category);
           },
+          padding: EdgeInsets.zero,
         ),
       ],
     );

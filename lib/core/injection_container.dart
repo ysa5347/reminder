@@ -27,10 +27,16 @@ import 'package:reminder/domain/usecase/item/SaveItem_usecase.dart';
 import 'package:reminder/domain/usecase/item/get_all_items_usecase.dart';
 import 'package:reminder/domain/usecase/Alarm/SetAlarm_usecase.dart';
 import 'package:reminder/domain/usecase/Alarm/DeleteAlarm_usecase.dart';
+import 'package:reminder/domain/usecase/category/get_categories_usecase.dart';
+import 'package:reminder/domain/usecase/category/save_category_usecase.dart';
+import 'package:reminder/domain/usecase/category/update_category_usecase.dart';
+import 'package:reminder/domain/usecase/category/delete_category_usecase.dart';
 
 // BLoCs
 import 'package:reminder/presentation/blocs/example/example_bloc.dart';
 import 'package:reminder/presentation/blocs/alarm/alarm_bloc.dart';
+import 'package:reminder/presentation/blocs/main/main_bloc.dart';
+import 'package:reminder/presentation/blocs/category/category_bloc.dart';
 
 // Core Services
 import 'package:reminder/core/localnotification_setup.dart';
@@ -109,6 +115,23 @@ Future<void> setupLocator() async {
   getIt.registerLazySingleton<DeleteAlarmUsecase>(
     () => DeleteAlarmUsecase(),
   );
+  
+  // Category Use Cases
+  getIt.registerLazySingleton<GetCategoriesUsecase>(
+    () => GetCategoriesUsecase(repository: getIt<CategoryRepository>()),
+  );
+  
+  getIt.registerLazySingleton<SaveCategoryUsecase>(
+    () => SaveCategoryUsecase(repository: getIt<CategoryRepository>()),
+  );
+  
+  getIt.registerLazySingleton<UpdateCategoryUsecase>(
+    () => UpdateCategoryUsecase(repository: getIt<CategoryRepository>()),
+  );
+  
+  getIt.registerLazySingleton<DeleteCategoryUsecase>(
+    () => DeleteCategoryUsecase(repository: getIt<CategoryRepository>()),
+  );
 
   // ========== Presentation Layer ==========
   
@@ -119,5 +142,18 @@ Future<void> setupLocator() async {
   
   getIt.registerFactory<AlarmBloc>(
     () => AlarmBloc(getIt<SetAlarmUsecase>()),
+  );
+  
+  getIt.registerFactory<MainBloc>(
+    () => MainBloc(getCategoriesUsecase: getIt<GetCategoriesUsecase>()),
+  );
+  
+  getIt.registerFactory<CategoryBloc>(
+    () => CategoryBloc(
+      getCategoriesUsecase: getIt<GetCategoriesUsecase>(),
+      saveCategoryUsecase: getIt<SaveCategoryUsecase>(),
+      updateCategoryUsecase: getIt<UpdateCategoryUsecase>(),
+      deleteCategoryUsecase: getIt<DeleteCategoryUsecase>(),
+    ),
   );
 }

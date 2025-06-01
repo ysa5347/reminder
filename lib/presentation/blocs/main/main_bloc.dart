@@ -3,9 +3,12 @@ import 'main_event.dart';
 import 'main_state.dart';
 import '../../../domain/entities/category.dart';
 import '../../../domain/entities/item.dart';
+import '../../../domain/usecase/category/get_categories_usecase.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
-  MainBloc() : super(MainInitial()) {
+  final GetCategoriesUsecase getCategoriesUsecase;
+
+  MainBloc({required this.getCategoriesUsecase}) : super(MainInitial()) {
     on<LoadMainData>(_onLoadMainData);
     on<RefreshMainData>(_onRefreshMainData);
     on<SearchItems>(_onSearchItems);
@@ -18,9 +21,14 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     emit(MainLoading());
     
     try {
-      // TODO: Implement actual data fetching logic
-      // For now, we'll use mock data
-      final categories = _getMockCategories();
+      // 실제 카테고리 데이터 조회
+      var categories = await getCategoriesUsecase();
+      
+      // 카테고리가 비어있으면 목 데이터 사용 (개발 시에만)
+      if (categories.isEmpty) {
+        categories = _getMockCategories();
+      }
+      
       final statistics = _getMockStatistics();
       
       emit(MainLoaded(
@@ -51,6 +59,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     print('Searching for: ${event.query}');
   }
 
+  // 기본 카테고리가 비어있을 때를 위한 목 데이터 (개발 시에만 사용)
   List<Category> _getMockCategories() {
     return [
       const Category(

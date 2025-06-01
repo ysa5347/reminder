@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../blocs/main/main_bloc.dart';
 import '../../../blocs/main/main_state.dart';
 import '../../../blocs/main/main_event.dart';
+import '../../../blocs/category/category_bloc.dart';
+import '../../../blocs/category/category_event.dart';
+import '../../../blocs/category/category_state.dart';
+import '../../../widgets/category_form_bottom_sheet.dart';
 import '../../../../domain/entities/category.dart';
 
 class MainView extends StatefulWidget {
@@ -234,30 +238,65 @@ class _MainViewState extends State<MainView> {
   }
 
   Widget _buildCategoriesSection(BuildContext context, List<Category> categories) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          '카테고리',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
+    return BlocListener<CategoryBloc, CategoryState>(
+      listener: (context, state) {
+        if (state is CategoryOperationSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // 카테고리 목록 새로고침
+          context.read<MainBloc>().add(RefreshMainData());
+        } else if (state is CategoryError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 카테고리 헤더 및 추가 버튼
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                '카테고리',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              IconButton(
+                onPressed: () => _showCategoryBottomSheet(context),
+                icon: const Icon(
+                  Icons.add,
+                  color: Colors.blue,
+                ),
+                tooltip: '카테고리 추가',
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 16),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: categories.length,
-          separatorBuilder: (context, index) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            return _buildCategoryCard(context, category);
-          },
-          padding: EdgeInsets.zero,
-        ),
-      ],
+          const SizedBox(height: 16),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: categories.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              return _buildCategoryCard(context, category);
+            },
+            padding: EdgeInsets.zero,
+          ),
+        ],
+      ),
     );
   }
 
@@ -265,57 +304,78 @@ class _MainViewState extends State<MainView> {
     final color = _parseColor(category.color ?? '#2196F3');
     final iconData = _parseIcon(category.icon ?? 'category');
 
-    return GestureDetector(
-      onTap: () => _navigateToCategoryItems(context, category),
-      child: Container(
+    return Dismissible(
+      key: Key('category_${category.id}'),
+      direction: DismissDirection.endToStart,
+      background: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.red,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          leading: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              iconData,
-              color: color,
-              size: 24,
-            ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 24,
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        return await _showDeleteConfirmationDialog(context, category);
+      },
+      child: GestureDetector(
+        onTap: () => _navigateToCategoryItems(context, category),
+        onLongPress: () => _showCategoryOptionsBottomSheet(context, category),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          title: Text(
-            category.name,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            leading: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                iconData,
+                color: color,
+                size: 24,
+              ),
             ),
-          ),
-          subtitle: category.description != null
-              ? Text(
-                  category.description!,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                )
-              : null,
-          trailing: const Icon(
-            Icons.arrow_forward_ios,
-            size: 16,
-            color: Colors.grey,
+            title: Text(
+              category.name,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            subtitle: category.description != null
+                ? Text(
+                    category.description!,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  )
+                : null,
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.grey,
+            ),
           ),
         ),
       ),
@@ -356,6 +416,109 @@ class _MainViewState extends State<MainView> {
     // TODO: Implement navigation to category items page
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('${category.name} 카테고리로 이동 (구현 예정)')),
+    );
+  }
+
+  // 카테고리 추가/수정 모달 바텀텀 시트 표시
+  void _showCategoryBottomSheet(BuildContext context, {Category? category}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => CategoryFormBottomSheet(
+        category: category,
+        onSave: (category) {
+          if (category.id == null) {
+            // 새 카테고리 추가
+            context.read<CategoryBloc>().add(AddCategory(category));
+          } else {
+            // 기존 카테고리 수정
+            context.read<CategoryBloc>().add(UpdateCategory(category));
+          }
+        },
+      ),
+    );
+  }
+
+  // 카테고리 옵션 모달 바텀 시트 표시 (길게 누를 때)
+  void _showCategoryOptionsBottomSheet(BuildContext context, Category category) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              category.name,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.edit, color: Colors.blue),
+              title: const Text('수정'),
+              onTap: () {
+                Navigator.pop(context);
+                _showCategoryBottomSheet(context, category: category);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.red),
+              title: const Text('삭제'),
+              onTap: () async {
+                Navigator.pop(context);
+                final shouldDelete = await _showDeleteConfirmationDialog(context, category);
+                if (shouldDelete == true) {
+                  context.read<CategoryBloc>().add(DeleteCategory(category.id!));
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 카테고리 삭제 확인 대화상자
+  Future<bool?> _showDeleteConfirmationDialog(BuildContext context, Category category) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('카테고리 삭제'),
+        content: Text('\'${category.name}\' 카테고리를 삭제하시겠습니까?\n\n삭제된 카테고리는 복구할 수 없습니다.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: const Text('삭제'),
+          ),
+        ],
+      ),
     );
   }
 }

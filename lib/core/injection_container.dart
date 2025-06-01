@@ -22,9 +22,15 @@ import 'package:reminder/domain/repository/repeat_repository.dart';
 // Use Cases
 import 'package:reminder/domain/usecase/example/get_example_usecase.dart';
 import 'package:reminder/domain/usecase/notification/GetNotifications_usecase.dart';
+import 'package:reminder/domain/usecase/notification/save_notification_usecase.dart';
+import 'package:reminder/domain/usecase/notification/delete_notification_usecase.dart';
 import 'package:reminder/domain/usecase/item/GetItems_usecase.dart';
 import 'package:reminder/domain/usecase/item/SaveItem_usecase.dart';
 import 'package:reminder/domain/usecase/item/get_all_items_usecase.dart';
+import 'package:reminder/domain/usecase/item/get_items_by_type_usecase.dart';
+import 'package:reminder/domain/usecase/item/update_item_usecase.dart';
+import 'package:reminder/domain/usecase/item/delete_item_usecase.dart';
+import 'package:reminder/domain/usecase/item/search_items_usecase.dart';
 import 'package:reminder/domain/usecase/Alarm/SetAlarm_usecase.dart';
 import 'package:reminder/domain/usecase/Alarm/DeleteAlarm_usecase.dart';
 import 'package:reminder/domain/usecase/category/get_categories_usecase.dart';
@@ -37,6 +43,7 @@ import 'package:reminder/presentation/blocs/example/example_bloc.dart';
 import 'package:reminder/presentation/blocs/alarm/alarm_bloc.dart';
 import 'package:reminder/presentation/blocs/main/main_bloc.dart';
 import 'package:reminder/presentation/blocs/category/category_bloc.dart';
+import 'package:reminder/presentation/blocs/item_list/item_list_bloc.dart';
 
 // Core Services
 import 'package:reminder/core/localnotification_setup.dart';
@@ -102,9 +109,33 @@ Future<void> setupLocator() async {
     () => GetAllItemsUsecase(getIt<ItemRepository>()),
   );
   
+  getIt.registerLazySingleton<GetItemsByTypeUsecase>(
+    () => GetItemsByTypeUsecase(repository: getIt<ItemRepository>()),
+  );
+  
+  getIt.registerLazySingleton<UpdateItemUsecase>(
+    () => UpdateItemUsecase(repository: getIt<ItemRepository>()),
+  );
+  
+  getIt.registerLazySingleton<DeleteItemUsecase>(
+    () => DeleteItemUsecase(repository: getIt<ItemRepository>()),
+  );
+  
+  getIt.registerLazySingleton<SearchItemsUsecase>(
+    () => SearchItemsUsecase(repository: getIt<ItemRepository>()),
+  );
+  
   // Notification Use Cases
   getIt.registerLazySingleton<GetNotificationsUsecase>(
     () => GetNotificationsUsecase(repository: getIt<NotificationRepository>()),
+  );
+  
+  getIt.registerLazySingleton<SaveNotificationUsecase>(
+    () => SaveNotificationUsecase(repository: getIt<NotificationRepository>()),
+  );
+  
+  getIt.registerLazySingleton<DeleteNotificationUsecase>(
+    () => DeleteNotificationUsecase(repository: getIt<NotificationRepository>()),
   );
   
   // Alarm Use Cases
@@ -141,7 +172,11 @@ Future<void> setupLocator() async {
   );
   
   getIt.registerFactory<AlarmBloc>(
-    () => AlarmBloc(getIt<SetAlarmUsecase>()),
+    () => AlarmBloc(
+      setAlarmUsecase: getIt<SetAlarmUsecase>(),
+      deleteAlarmUsecase: getIt<DeleteAlarmUsecase>(),
+      notificationRepository: getIt<NotificationRepository>(),
+    ),
   );
   
   getIt.registerFactory<MainBloc>(
@@ -154,6 +189,20 @@ Future<void> setupLocator() async {
       saveCategoryUsecase: getIt<SaveCategoryUsecase>(),
       updateCategoryUsecase: getIt<UpdateCategoryUsecase>(),
       deleteCategoryUsecase: getIt<DeleteCategoryUsecase>(),
+    ),
+  );
+  
+  getIt.registerFactory<ItemListBloc>(
+    () => ItemListBloc(
+      getItemsByTypeUsecase: getIt<GetItemsByTypeUsecase>(),
+      searchItemsUsecase: getIt<SearchItemsUsecase>(),
+      saveItemUsecase: getIt<SaveItemUsecase>(),
+      updateItemUsecase: getIt<UpdateItemUsecase>(),
+      deleteItemUsecase: getIt<DeleteItemUsecase>(),
+      saveNotificationUsecase: getIt<SaveNotificationUsecase>(),
+      deleteNotificationUsecase: getIt<DeleteNotificationUsecase>(),
+      setAlarmUsecase: getIt<SetAlarmUsecase>(),
+      deleteAlarmUsecase: getIt<DeleteAlarmUsecase>(),
     ),
   );
 }

@@ -8,6 +8,10 @@ import '../../../blocs/category/category_event.dart';
 import '../../../blocs/category/category_state.dart';
 import '../../../widgets/category_form_bottom_sheet.dart';
 import '../../../../domain/entities/category.dart';
+import '../../item_list/item_list_page.dart';
+import '../../alarm/alarm_setting_page.dart';
+import '../../../blocs/alarm/alarm_bloc.dart';
+import '../../../../core/injection_container.dart';
 
 class MainView extends StatefulWidget {
   const MainView({Key? key}) : super(key: key);
@@ -29,6 +33,36 @@ class _MainViewState extends State<MainView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          'Reminder',
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.bug_report,
+              color: Colors.grey,
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                    create: (context) => getIt<AlarmBloc>(),
+                    child: AlarmSettingPage(),
+                  ),
+                ),
+              );
+            },
+            tooltip: '알람 디버그',
+          ),
+        ],
+      ),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
@@ -406,16 +440,22 @@ class _MainViewState extends State<MainView> {
   }
 
   void _navigateToItemList(BuildContext context, String type) {
-    // TODO: Implement navigation to item list page
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$type 항목 리스트로 이동 (구현 예정)')),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ItemListPage(type: type),
+      ),
     );
   }
 
   void _navigateToCategoryItems(BuildContext context, Category category) {
-    // TODO: Implement navigation to category items page
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${category.name} 카테고리로 이동 (구현 예정)')),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ItemListPage(
+          type: 'category',
+          categoryId: category.id,
+          categoryName: category.name,
+        ),
+      ),
     );
   }
 

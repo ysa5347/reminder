@@ -9,6 +9,7 @@ import 'package:reminder/core/injection_container.dart' as di;
 import 'package:reminder/core/localnotification_setup.dart';
 
 // Presentation imports
+import 'package:reminder/presentation/pages/main/main_page.dart';
 import 'package:reminder/presentation/pages/alarm/alarm_setting_page.dart';
 import 'package:reminder/presentation/blocs/alarm/alarm_bloc.dart';
 
@@ -40,10 +41,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: BlocProvider(
-        create: (context) => di.getIt<AlarmBloc>(),
-        child: AlarmSettingPage(),
-      ),
+      home: MainPage(),
     );
   }
 }
